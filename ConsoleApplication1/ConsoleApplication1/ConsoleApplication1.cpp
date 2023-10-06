@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <vector>
-
+/* This func doesn't know if input and output sizes are valid. It can totaly create "out of bounds" errors */
 void rotateImageCCW(std::vector<unsigned char>& input, std::vector<unsigned char>& output, int width, int height) {
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
@@ -9,7 +9,8 @@ void rotateImageCCW(std::vector<unsigned char>& input, std::vector<unsigned char
         }
     }
 }
-
+/* It's better to separate code into functions (or even better -- a class). So main 
+ * for the most part should have only calls of those functions */
 int main() {
     // Load BMP image
     std::ifstream inputFile("bmp", std::ios::binary);
@@ -59,6 +60,8 @@ int main() {
     outputFile.write(reinterpret_cast<const char*>(&compression), 4); // no compression
     int dataSize = width * height;
     outputFile.write(reinterpret_cast<const char*>(&dataSize), 4);
+    /* Was it fun to write all those hex numbers? What if you'll need to expand your program: gonna change each of them
+     * by hand yourself?. Find solution to avoid such "hard coding"*/
     outputFile.write("\x13\x0B\x00\x00\x13\x0B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16); // Default values for BMP
     outputFile.write(reinterpret_cast<const char*>(rotatedImage.data()), width * height);
 
